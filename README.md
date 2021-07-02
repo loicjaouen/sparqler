@@ -20,3 +20,5 @@ multiple triple store sparql request edition and execution
 
 - define tasks in `.vscode/tasks.json`
 - apply them directly while editing the request by saving the file to disk and calling the task with the short keys `Ctrl-Maj-B` 
+
+![Screenshot from 2021-07-02 19-13-52](https://user-images.githubusercontent.com/3933654/124309887-b0418680-db6b-11eb-82cc-d3d2e3f67ae3.png)
