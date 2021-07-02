@@ -1,0 +1,17 @@
+#
+# extract the admin data
+#
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#> 
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#> 
+
+# use construct if you want to export as turtle or trig
+construct { 
+    ?s ?p ?o .
+}
+FROM <http://www.knora.org/data/permissions>
+FROM <http://www.ontotext.com/explicit>
+WHERE
+{
+    ?s ?p ?o .
+    ?s knora-admin:forProject <http://rdfh.ch/projects/0112>
+}
