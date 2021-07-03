@@ -1,17 +1,12 @@
 #! /usr/bin/env bash
-#ubrs# env bash is more portable, read http://bashcookbook.com/ recipe 15.1
 
 ###############################################################################
 
 #
-# name this script
+# GraphDB Sparql query execution script 
 #
-# describe the script
+# send a query to a GraphDB sparql end point
 #
-
-#ubrs# note : generate your barebone script from this boiler plate:
-#ubrs#        grep '# note @ubrs:' boilerplate > myscript
-#ubrs#        chmod +x myscript 
 
 ###############################################################################
 
@@ -20,115 +15,59 @@
 # comment this out is you need to know that it failed
 set -o errexit
 # don't allow undeclared variables
-set -o nounset
+#set -o nounset
 # exit on pipe failure (cmd1 | cmd2 : exits if cmd2 fails)
 set -o pipefail
 # comment xtrace when not in debug
 set -o xtrace
 
-###############################################################################
-
-# check user
-#ubrs# this is for sysadmin, isn't it?
-#ubrs# tests: prefer `[[` to `[` for readability, no escape for `(`, use `&&`,
-#ubrs#        no word splitting for strings, pattern matchin
-#ubrs#        ref: https://mywiki.wooledge.org/BashFAQ/031
-#if [[ $EUID -ne 0 ]]; then
-#  echo "Please run as root"
-#  exit 1
-#fi
 
 ###############################################################################
-
-# helper functions
-
-###############################################################################
-
-# functions script specific functions
-
-#ubrs# note: when a function is called, it's not clear that it is a function is a
-#ubrs#       function, use a prefix
-function do-onetwo {
-    #ubrs# function returning a string value via `echo`
-    echo "one two"
-    return 0
-}
-
-#ubrs# note: using bash is not a reason to not test
-function test-onetwo {
-    #ubrs# call methods directly and let them use stdout/err
-    do-onetwo
-    #ubrs# or capture the echoed output
-    #ubrs# use local var `$_` for temporary result
-    local _=$( do-onetwo )
-    #ubrs# check return values as content
-    if [[ $( do-onetwo ) != "one two" ]]; then
-        exit 1
-    fi
-    #ubrs# funky things
-    if [[ $( do-onetwo ) != *two ]]; then
-        exit 1
-    fi
-    #ubrs# test returned values
-    if ! do-onetwo; then
-        exit 1
-    fi
-    #ubrs# test meaningful non 0 results
-    local _=$( do-onetwo )
-    if [[ $? -eq 3 ]]; then
-        exit 1
-    fi
-}
-
-function test-parse_args {
-    # test parsing with these args
-    # expected: FLAG_HELP=0, FLAG_VERBOSE=1,
-    #           ARG_FILENAME=filename, ARG_GOAL=""
-    do-parse_args -h -f=filename --config=test.config
-
-    if [[ "${FLAG_HELP}" -eq 0 ]]; then
-        echo "FLAG_HELP: ${FLAG_HELP}"
-    else
-        exit 1
-    fi
-
-    if [[ "${FLAG_VERBOSE}" -eq 1 ]]; then
-        echo "FLAG_VERBOSE: ${FLAG_VERBOSE}"
-    else
-        exit 1
-    fi
-    
-    if [[ "${ARG_FILE}" == "filename" ]]; then
-        echo "ARG_FILE: ${ARG_FILE}"
-    else
-        exit 1
-    fi
-    
-    if [[ -n "${ARG_GOAL}" ]]; then
-        echo "ARG_GOAL: ${ARG_GOAL}"
-    else
-        exit 1
-    fi
-
-    if [[ "$CONFIG_A" == "a" && "$CONFIG_B" == "bb" && "$CONFIG_C" == "$(hostname)" && -z "$CONFIG_D" ]]; then
-        echo "config: $CONFIG_A, $CONFIG_B, $CONFIG_C, ${CONFIG_D}###"
-    else
-        exit 1
-    fi
-    
-}
-
-###############################################################################
-
-# helper functions
-
-function do-tests {
-    test-parse_args 
-    test-onetwo
-}
 
 function do-main {
-    echo "doing things about ${ARG_VAL}"
+    # check query file
+    if [[ -z $ARG_QUERY ]]; then
+      echo "no query file specified"
+      print_help
+      exit 1
+    fi
+
+    QUERY=`cat $ARG_QUERY | wwwenc`
+
+    # check repo
+    if [[ -z $ARG_REPO ]]; then
+      echo "no repo file specified"
+      print_help
+      exit 1
+    fi
+
+    case ${ARG_FORMAT:=json} in
+    json)
+        ACCEPT="application/sparql-results+json"
+        ;;
+    xml)
+        ACCEPT="application/rdf+xml"
+        ;;
+    trig)
+        ACCEPT="application/x-trig"
+        ;;
+    ttl)
+        ACCEPT="text/turtle"
+        ;;
+    csv)
+        ACCEPT="text/csv"
+        ;;
+    *)
+        echo "unknown file format"
+        print_help
+        exit 1
+    esac
+
+    curl "${FLAG_HTTP:-http}://${ARG_USER:+$ARG_USER${ARG_PASSWORD:+:$ARG_PASSWORD}@}${ARG_HOST:-localhost}${ARG_PORT:+:$ARG_PORT}/repositories/${ARG_REPO:-knora-test}" \
+    -H "Accept:${ACCEPT}" \
+    -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
+    --data-raw "query=${QUERY}&infer=true&sameAs=true&limit=1000&offset=0" \
+    ${ARG_OUTPUT:+-o $ARG_OUTPUT.$ARG_FORMAT}
 }
 
 function do-parse_args {
@@ -139,55 +78,104 @@ function do-parse_args {
             -v|--verbose)
             FLAG_VERBOSE=0
             ;;
-            -h|--help)
-            FLAG_HELP=0
+            --help)
+            print_help
+            exit 0
             ;;
             # arguments
-            -f=*|--file=*)
-            ARG_FILE="${i#*=}"
+            -e=*|--env=*)
+            ARG_ENV="${i#*=}"
             shift
             ;;
-            -g=*|--goal=*)
-            ARG_GOAL="${i#*=}"
+            -u=*|--user=*)
+            ARG_USER="${i#*=}"
             shift
             ;;
-            -c=*|--config=*)
-            ARG_CONFIG="${i#*=}"
+            -p=*|--password=*)
+            ARG_PASSWORD="${i#*=}"
+            shift
+            ;;
+            -s)
+            FLAG_HTTP="https"
+            shift
+            ;;
+            -h=*|--host=*)
+            ARG_HOST="${i#*=}"
+            shift
+            ;;
+            --port=*)
+            ARG_PORT="${i#*=}"
+            shift
+            ;;
+            -r=*|--repo=*)
+            ARG_REPO="${i#*=}"
+            shift
+            ;;
+            -q=*|--query=*)
+            ARG_QUERY="${i#*=}"
+            shift
+            ;;
+            -o=*|--output=*)
+            ARG_OUTPUT="${i#*=}"
+            shift
+            ;;
+            -f=*|--format=*)
+            ARG_FORMAT="${i#*=}"
             shift
             ;;
             *)
-                # unknown option
+            echo "unknown argument switch: $1"
+            echo
+            print_help
+            exit 1
             ;;
         esac
     done
 
-    if [[ -n "$ARG_CONFIG" ]]; then
-        if [[ -r $ARG_CONFIG ]]; then
-            source $ARG_CONFIG
+    if [[ -n "$ARG_ENV" ]]; then
+        if [[ -r $ARG_ENV ]]; then
+            source $ARG_ENV
         else
-            echo "ERROR: fichier de config non lisible ou non existant ($ARG_CONFIG)"
+            echo "ERROR: environment file is not readable ($ARG_ENV)"
             exit 1
         fi
     fi
+}
+
+function print_help {
+    cat >&2 << EOF
+Execute a query on a graphdb server.
+
+Usage: $0 [-v][--help] [--env=env_file] [--user=user] [--password=password] [-s] [--host=graphdb_host] [--port=port] [--repo=repo] --query=query_file [--output=output_file] [--format=rdf_format]
+
+argument list:
+  -v                : verbose
+  --help            : print this message
+  -e|--env=env_file : environment variable file
+  -u|--user=user    : graphdb user
+  -p]--password=pwd : graphdb pwd
+  -s                : use protocol https
+  -h|--host=host    : graphdb host, only the domain name
+  --port=port       : graphdb port
+  -r|--repo=repo    : graphdb repo id
+  -q|--query=query  : file name of the query file
+  -o|--output=file  : file to writre he output to
+  --format=rdf_fmt  : rdf format (csv,ttl,json) 
+
+Note: the format has to match the nature of the data:
+      ttl or trig are made for triples and graph and can
+      be used to format 'construct'.
+      A 'select' query can formatted as csv or json.
+
+EOF
 }
 ###############################################################################
 
 # main
 
-# delegate the argument parsing to `do-parse`
-FLAG_VERBOSE=1
-FLAG_HELP=1
-ARG_FILE=
-ARG_GOAL=
+# delegate the argument parsing to `do-parse_args`
 do-parse_args $@
 
-# run tests if asked
-if [[ $# -gt 0 && $1 == "runtests" ]]; then
-    #ubrs# prefix should help knowing it is a function call
-    do-tests
-else
-    do-main
-fi
+do-main
 
-#ubrs# last line: being optimistic, exit with the successful
 exit 0
