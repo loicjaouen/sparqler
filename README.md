@@ -11,6 +11,7 @@ multiple triple store sparql request edition and execution
 # dependencies
 
 - install [jena](https://jena.apache.org/) and configure your PATH to point to it folder containing the tools rsparql, rdfdiff, riot, ...
+- there is a home made scripts to query graphdb: `scripts/query-graphdb.sh` that can of course be used on its own
 
 # edit your queries
 

@@ -4,6 +4,26 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "query graphdb prod",
+            "type": "shell",
+            "command": "${workspaceFolder}/scripts/query-graphdb.sh -e=env/prod.env -h=knora.unil.ch --port=7200 -r=knora-prod -q=${file} -f=ttl",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "query graphdb local",
+            "type": "shell",
+            "command": "${workspaceFolder}/scripts/query-graphdb.sh -e=env/local.env -h=db-local.unil.ch -r=knora-test -q=${file} -f=ttl",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": "query fuzeki local",
             "type": "shell",
             "command": "rsparql --query  ${file} --service=http://db-local.unil.ch/knora-test",
