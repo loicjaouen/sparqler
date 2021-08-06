@@ -4,9 +4,29 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "query graphdb prod",
+            "label": "query graphdb prod, ttl",
             "type": "shell",
             "command": "${workspaceFolder}/scripts/query-graphdb.sh -e=env/prod.env -h=knora.unil.ch --port=7200 -r=knora-prod -q=${file} -f=ttl",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "query graphdb prod, json",
+            "type": "shell",
+            "command": "${workspaceFolder}/scripts/query-graphdb.sh -e=env/prod.env -h=knora.unil.ch --port=7200 -r=knora-prod -q=${file} -f=json",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "query graphdb prod, csv",
+            "type": "shell",
+            "command": "${workspaceFolder}/scripts/query-graphdb.sh -e=env/prod.env -h=knora.unil.ch --port=7200 -r=knora-prod -q=${file} -f=csv",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -27,6 +47,26 @@
             "label": "query fuzeki local",
             "type": "shell",
             "command": "rsparql --query  ${file} --service=http://db-local.unil.ch/knora-test",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "query fuzeki sipi-pv",
+            "type": "shell",
+            "command": "rsparql --query  ${file} --service=http://db-sipipv.unil.ch/knora-test",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "update fuzeki sipi-pv",
+            "type": "shell",
+            "command": "rupdate --update=${file} --service=http://db-sipipv.unil.ch/knora-test",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
