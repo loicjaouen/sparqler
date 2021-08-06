@@ -1,0 +1,19 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>  
+
+CONSTRUCT {
+    ?fileValue ?objPred ?objObj .
+    ?fileValue knora-base:attachedToProject ?resourceProject .
+    ?fileValue knora-base:hasPermissions ?currentFileValuePermissions .
+} WHERE {
+    ?fileValue knora-base:internalFilename "F28YA9Vq3iY-BFPFHwsiHvW.jp2" .
+    ?currentFileValue knora-base:previousValue* ?fileValue ;
+                      knora-base:hasPermissions ?currentFileValuePermissions .
+    ?resource ?prop ?currentFileValue ;         
+    knora-base:attachedToProject ?resourceProject .      
+    ?fileValue ?objPred ?objObj .
+    FILTER(?objPred != knora-base:previousValue)
+
+    ?currentFileValue knora-base:isDeleted false .
+    ?resource knora-base:isDeleted false . 
+} 

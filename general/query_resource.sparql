@@ -1,0 +1,8 @@
+#construct { ?s ?p ?o }
+select ?s ?p ?o
+where {
+    # lists in steiner data graph
+    # bind(<http://rdfh.ch/lists/0110/VZJK_6LaT3G4CTlq5IIreg> as ?s )
+    bind(<http://rdfh.ch/permissions/0110/h-steiner-a001> as ?s )
+    ?s ?p ?o 
+}

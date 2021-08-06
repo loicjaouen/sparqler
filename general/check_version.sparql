@@ -1,0 +1,4 @@
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+select * where { 
+	?s knora-base:ontologyVersion ?o .
+} limit 100 

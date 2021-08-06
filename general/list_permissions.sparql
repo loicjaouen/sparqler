@@ -1,0 +1,28 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX admin: <http://webns.net/mvcb/>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+
+# with/delete or select/from
+
+# with <http://www.knora.org/data/permissions>
+# delete { ?s ?p ?o }
+
+select ?s ?p ?o
+from <http://www.knora.org/data/permissions>
+where { 
+	?s ?p ?o .
+
+    # filter on project
+    ?s knora-admin:forProject <http://rdfh.ch/projects/0118> .
+
+    # this does not work if we restrict to graph `from <permissions>`
+    # ?s knora-admin:forProject ?project .
+    # ?project knora-admin:projectShortcode '0118' .
+
+    # filter on class
+    # this is not needed if we restrict to the permissions graph
+    # ?s a ?class .
+    # ?class rdfs:subClassOf knora-admin:Permission .
+    # filter(?class in (knora-admin:DefaultObjectAccessPermission, knora-admin:AdministrativePermission))    
+}

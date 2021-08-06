@@ -1,0 +1,5 @@
+select *
+from <http://www.knora.org/ontology/0118/rome-siecles-obscurs>
+where { 
+    ?s ?p ?o .
+}
