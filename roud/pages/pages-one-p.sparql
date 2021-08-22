@@ -1,0 +1,9 @@
+PREFIX roud-oeuvres: <http://www.knora.org/ontology/0112/roud-oeuvres#>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+select ?pagesString ?new_pagesString
+where { 
+    ?resource roud-oeuvres:periodicalArticleIsInPages ?pages .
+    ?pages knora-base:valueHasString ?pagesString .
+#    filter(regex(?pagesString, "^([^p]*)p. ([\\d]+[^\\d]+[\\d]+)"))
+#    bind(replace(?pagesString, "^([^p]*)p. ([\\d]+[^\\d]+[\\d]+)", "$1pp. $2") AS ?new_pagesString)
+}

@@ -14,6 +14,6 @@ FROM <http://www.ontotext.com/explicit>
 WHERE
 {
     ?s ?p ?o .
-    ?s a knora-base:ListNode .
+#    ?s a knora-base:ListNode .
 #    ?s knora-base:attachedToProject <http://rdfh.ch/projects/0112>
 }

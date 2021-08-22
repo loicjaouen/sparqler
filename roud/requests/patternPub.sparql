@@ -1,0 +1,238 @@
+PREFIX knora-api: <http://api.knora.org/ontology/knora-api/simple/v2#>
+PREFIX roud-oeuvres: <http://www.knora.org/ontology/0112/roud-oeuvres#>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+CONSTRUCT {
+    
+    ## pub 0 data
+    ?pub_0 a ?pub_0_type ;
+            roud-oeuvres:publicationHasTitle ?pub_0_title ;
+            roud-oeuvres:publicationHasDate ?pub_0_date ;
+            roud-oeuvres:isPublishedInPeriodical ?pub_0_periodical ;
+            # roud-oeuvres:publicationHasPhoto ?pub_0_photo ;
+            roud-oeuvres:hasPublisher ?pub_0_publisher .
+    
+    ## dossier pub 0
+    ?pub_0_dossier a ?pub_0_dossier_type ;
+            roud-oeuvres:geneticDossierResultsInPublication ?pub_0 .
+
+    ## publication reused in pub 0 (1)
+    ?pub_down00 a ?pub_down00_type .
+    ?pub_down00 roud-oeuvres:publicationIsReusedInDossier ?pub_0_dossier .
+    
+    ## diary entries (ms) reused in pub 0 (2)
+    ?diaryReusedInPub_0 a ?diaryReusedInPub_0_type ;
+            roud-oeuvres:msIsReusedInDossier ?pub_0_dossier ;
+            roud-oeuvres:manuscriptHasTitle ?diaryReusedInPub_0_title ;
+            roud-oeuvres:manuscriptIsInArchive ?diaryReusedInPub_0_archive ;
+            roud-oeuvres:manuscriptHasShelfmark ?diaryReusedInPub_0_shelfmark ;
+            roud-oeuvres:manuscriptHasEditorialSet ?diaryReusedInPub_0_editorialSet .
+    
+    ## diary entries (msPart) reused in pub 0 (3)
+    ?diaryPartReusedInPub_0 a ?diaryPartReusedInPub_0_type ;
+            roud-oeuvres:msPartIsReusedInDossier ?pub_0_dossier ;
+            roud-oeuvres:msPartHasTitle ?diaryPartReusedInPub_0_title ;
+            roud-oeuvres:msPartHasNumber ?diaryPartReusedInPub_0_number ;
+            roud-oeuvres:msPartIsPartOf ?diaryPartReusedInPub_0_Ms .
+    ?diaryPartReusedInPub_0_Ms a ?diaryPartReusedInPub_0_Ms_type ;
+            roud-oeuvres:manuscriptHasTitle ?diaryPartReusedInPub_0_Ms_title ;
+            roud-oeuvres:manuscriptIsInArchive ?diaryPartReusedInPub_0_Ms_archive ;
+            roud-oeuvres:manuscriptHasShelfmark ?diaryPartReusedInPub_0_Ms_shelfmark .
+
+    ## avant-textes of pub 0 (4)
+    ?atPub_0  a ?atPub_0_type ;
+            roud-oeuvres:msIsAvantTextInGeneticDossier ?pub_0_dossier ;
+            roud-oeuvres:manuscriptHasTitle ?atPub_0_title ;
+            roud-oeuvres:manuscriptIsInArchive ?atPub_0_archive ;
+            roud-oeuvres:manuscriptHasShelfmark ?atPub_0_shelfmark ;
+            roud-oeuvres:hasGeneticStage ?atPub_0_geneticStage . 
+    
+    ## pub parts reused in pub (5)
+    ?pub_down01 a ?pub_down01_type ;
+            roud-oeuvres:pubPartIsReusedInDossier ?pub_0_dossier .
+
+    
+    ## re-publication of pub 0 (6)
+    ?pub_0 roud-oeuvres:publicationIsRepublishedDossier ?pub_0_repubDossier .
+    ?pub_0_repubDossier roud-oeuvres:geneticDossierResultsInPublication ?pub_0_repub .
+    ?pub_0_repub   a ?pub_0_repub_type ;
+                    roud-oeuvres:publicationHasTitle ?pub_0_repub_title ;
+                    roud-oeuvres:publicationHasDate ?pub_0_repub_date ;
+                    # roud-oeuvres:publicationHasPhoto ?pub_0_repub_photo ;
+                    roud-oeuvres:hasPublisher ?pub_0_repub_publisher .
+
+    ## publication reusing pub 0 (7)
+    ?pub_0 roud-oeuvres:publicationIsReusedInDossier ?pub_up00_dossier .
+    ?pub_up00_dossier roud-oeuvres:geneticDossierResultsInPublication ?pub_up00 .
+    ?pub_up00 a ?pub_up00_type .
+    ?pub_up00_dossier a ?pub_up00_dossier_type .
+
+    ## publication part reusing pub 0 (8)
+    ?pub_0 roud-oeuvres:publicationIsReusedInDossierPart ?pubPart_up01_dossierPart .
+    ?pubPart_up01_dossierPart roud-oeuvres:geneticDossierPartResultsInPubPart ?pubPart_up01 .
+    ?pubPart_up01 a ?pubPart_up01_type .
+    ?pubPart_up01_dossierPart a ?pubPart_up01_dossierPart_type .
+    
+    ## publication parts of pub 0
+    ?pubPart_1 a ?pubPart_1_type ;
+             roud-oeuvres:pubPartIsPartOf ?pub_0 ;
+             roud-oeuvres:pubPartHasTitle ?pubPart_1_title ;
+             roud-oeuvres:pubPartHasNumber ?pubPart_1_number .
+ 
+    
+    
+} 
+FROM <http://www.knora.org/data/0112/roud-oeuvres>
+# to avoid blank nodes
+FROM <http://www.ontotext.com/explicit>
+WHERE {
+    
+    BIND(<http://rdfh.ch/0112/MBnQ02C1Q2aIC8iIEA3NMg> as ?pub_0)
+    
+    ##################### pub 0 #####################
+    ## pub 0 data
+    ?pub_0 a ?pub_0_type .
+    ?pub_0 roud-oeuvres:publicationHasTitle ?pub_0_titleIRI .
+    ?pub_0_titleIRI knora-base:valueHasString ?pub_0_title .
+    ?pub_0 roud-oeuvres:publicationHasDate ?pub_0_dateIRI .
+    ?pub_0_dateIRI knora-base:valueHasString ?pub_0_date .
+    # if article
+    optional {
+        ?pub_0 roud-oeuvres:isPublishedInPeriodical ?pub_0_periodicalIRI .
+        ?pub_0_periodicalIRI roud-oeuvres:periodicalHasTitle ?pub_0_periodicalTitleIRI .
+        ?pub_0_periodicalTitleIRI knora-base:valueHasString ?pub_0_periodical .
+    }
+    # if book
+    optional {
+        ?pub_0 roud-oeuvres:hasPublisher ?pub_0_publisherIRI .
+        ?pub_0_publisherIRI roud-oeuvres:publisherHasName ?pub_0_publisherNameIRI .
+        ?pub_0_publisherNameIRI knora-base:valueHasString ?pub_0_publisher .
+    }
+    optional {
+        ?pub_0 roud-oeuvres:publicationHasPhoto ?pub_0_photo .
+    }
+        
+    ## dossier of pub 0
+    ?pub_0_dossier a ?pub_0_dossier_type .
+    # to avoid blank nodes
+    ?pub_0_dossier roud-oeuvres:geneticDossierResultsInPublication ?pub_0 .
+    # following two lines can be commented out
+    ?pub_0_dossier knora-base:isDeleted false .
+    
+    
+    ## publication reused in pub 0 (1)
+    optional {
+        ?pub_down00 a ?pub_down00_type .
+        # to avoid blank nodes
+        ?pub_down00 roud-oeuvres:publicationIsReusedInDossier ?pub_0_dossier .
+    }
+    
+    
+    ## diary reused in pub 0 (2)
+    optional {
+        ?diaryReusedInPub_0 a ?diaryReusedInPub_0_type .
+        # to avoid blank nodes
+        ?diaryReusedInPub_0 roud-oeuvres:msIsReusedInDossier ?pub_0_dossier .
+        ?diaryReusedInPub_0 roud-oeuvres:manuscriptHasTitle ?diaryReusedInPub_0_title_IRI .
+        ?diaryReusedInPub_0_title_IRI knora-base:valueHasString ?diaryReusedInPub_0_title .
+        ?diaryReusedInPub_0 roud-oeuvres:manuscriptIsInArchive ?diaryReusedInPub_0_archive_ListIRI .
+        ?diaryReusedInPub_0_archive_ListIRI knora-base:valueHasListNode ?diaryReusedInPub_0_archive_IRI .
+        ?diaryReusedInPub_0_archive_IRI rdfs:label ?diaryReusedInPub_0_archive .
+        FILTER(LANG(?diaryReusedInPub_0_archive) = "en")
+        ?diaryReusedInPub_0 roud-oeuvres:manuscriptHasShelfmark ?diaryReusedInPub_0_shelfmark_IRI .
+        ?diaryReusedInPub_0_shelfmark_IRI knora-base:valueHasString ?diaryReusedInPub_0_shelfmark .
+        ?diaryReusedInPub_0 roud-oeuvres:manuscriptHasEditorialSet ?diaryReusedInPub_0_editorialSet_ListIRI .
+        ?diaryReusedInPub_0_editorialSet_ListIRI knora-base:valueHasListNode ?diaryReusedInPub_0_editorialSet_IRI .
+        ?diaryReusedInPub_0_editorialSet_IRI rdfs:label ?diaryReusedInPub_0_editorialSet .
+        FILTER(LANG(?diaryReusedInPub_0_editorialSet) = "en")
+    }
+    
+    ## diary entries (msPart) reused in pub 0 (3)
+    optional {
+        ?diaryPartReusedInPub_0   a ?diaryPartReusedInPub_0_type .
+        ?diaryPartReusedInPub_0   roud-oeuvres:msPartIsReusedInDossier ?pub_0_dossier ;
+                                    roud-oeuvres:msPartHasTitle ?diaryPartReusedInPub_0_title_IRI .
+        ?diaryPartReusedInPub_0_title_IRI knora-base:valueHasString ?diaryPartReusedInPub_0_title .
+        ?diaryPartReusedInPub_0   roud-oeuvres:msPartHasNumber ?diaryPartReusedInPub_0_number_IRI .
+        ?diaryPartReusedInPub_0_number_IRI knora-base:valueHasString ?diaryPartReusedInPub_0_number .
+        ?diaryPartReusedInPub_0 roud-oeuvres:msPartIsPartOf ?diaryPartReusedInPub_0_Ms .
+        ?diaryPartReusedInPub_0_Ms a ?diaryPartReusedInPub_0_Ms_type .
+        ?diaryPartReusedInPub_0_Ms roud-oeuvres:manuscriptHasTitle ?diaryPartReusedInPub_0_MsIRI .
+        ?diaryPartReusedInPub_0_MsIRI knora-base:valueHasString ?diaryPartReusedInPub_0_Ms_title .
+        ?diaryPartReusedInPub_0_Ms roud-oeuvres:manuscriptHasShelfmark ?diaryPartReusedInPub_0_Ms_shelfmarkIRI .
+        ?diaryPartReusedInPub_0_Ms_shelfmarkIRI knora-base:valueHasString ?diaryPartReusedInPub_0_Ms_shelfmark .
+        ?diaryPartReusedInPub_0_Ms roud-oeuvres:manuscriptIsInArchive ?diaryPartReusedInPub_0_Ms_archiveListIRI .
+        ?diaryPartReusedInPub_0_Ms_archiveListIRI knora-base:valueHasListNode ?diaryPartReusedInPub_0_Ms_archiveIRI .
+        ?diaryPartReusedInPub_0_Ms_archiveIRI rdfs:label ?diaryPartReusedInPub_0_Ms_archive .
+        FILTER(LANG(?diaryPartReusedInPub_0_Ms_archive) = "en")
+    }
+    
+    ## avant-textes of pub 0 (4)
+    optional {
+        ?atPub_0 a ?atPub_0_type .
+        # to avoid blank nodes
+        ?atPub_0 roud-oeuvres:msIsAvantTextInGeneticDossier ?pub_0_dossier .
+        ?atPub_0 roud-oeuvres:manuscriptHasTitle ?atPub_0_title_IRI .
+        ?atPub_0_title_IRI knora-base:valueHasString ?atPub_0_title .
+        ?atPub_0 roud-oeuvres:manuscriptIsInArchive ?atPub_0_archive_ListIRI .
+        ?atPub_0_archive_ListIRI knora-base:valueHasListNode ?atPub_0_archive_IRI .
+        ?atPub_0_archive_IRI rdfs:label ?atPub_0_archive .
+        FILTER(LANG(?atPub_0_archive) = "en")
+        ?atPub_0 roud-oeuvres:manuscriptHasShelfmark ?atPub_0_shelfmarkIRI .
+        ?atPub_0_shelfmarkIRI knora-base:valueHasString ?atPub_0_shelfmark .
+        ?atPub_0 roud-oeuvres:hasGeneticStage ?atPub_0_geneticStage_ListIRI .
+        ?atPub_0_geneticStage_ListIRI knora-base:valueHasListNode ?atPub_0_geneticStage_IRI .
+        ?atPub_0_geneticStage_IRI rdfs:label ?atPub_0_geneticStage .
+        FILTER(LANG(?atPub_0_geneticStage) = "en")
+    }
+    
+    ## pub parts reused in pub (5)
+    optional {
+        ?pub_down01 a ?pub_down01_type .
+        # to avoid blank nodes
+        ?pub_down01 roud-oeuvres:pubPartIsReusedInDossier ?pub_0_dossier .
+    }
+    
+    ## republication (6)
+    optional {
+        ?pub_0 roud-oeuvres:publicationIsRepublishedDossier ?pub_0_repubDossier .
+        ?pub_0_repubDossier roud-oeuvres:geneticDossierResultsInPublication ?pub_0_repub .
+        ?pub_0_repub   a ?pub_0_repub_type .
+        ?pub_0_repub roud-oeuvres:publicationHasTitle ?pub_0_repub_titleIRI .
+        ?pub_0_repub_titleIRI knora-base:valueHasString ?pub_0_repub_title .
+        ?pub_0_repub roud-oeuvres:publicationHasDate ?pub_0_repub_dateIRI .
+        ?pub_0_repub_dateIRI knora-base:valueHasString ?pub_0_repub_date .
+    }
+    
+    ## publication reusing pub 0 (7)
+    optional {
+        ?pub_0 roud-oeuvres:publicationIsReusedInDossier ?pub_up00_dossier .
+        ?pub_up00_dossier roud-oeuvres:geneticDossierResultsInPublication ?pub_up00 .
+        ?pub_up00   a ?pub_up00_type .
+        ?pub_up00_dossier a ?pub_up00_dossier_type .
+    }
+    
+    
+    ## publication part reusing pub 0 (8)
+    optional {
+        ?pub_0 roud-oeuvres:publicationIsReusedInDossierPart ?pubPart_up01_dossierPart .
+        ?pubPart_up01_dossierPart roud-oeuvres:geneticDossierPartResultsInPubPart ?pubPart_up01 .
+        ?pubPart_up01   a ?pubPart_up01_type .
+        ?pubPart_up01_dossierPart a ?pubPart_up01_dossierPart_type .
+    }  
+    
+    
+    ## pub parts of pub_0
+    optional {
+        ?pubPart_1 a ?pubPart_1_type .
+        # to avoid blank nodes
+        ?pubPart_1    roud-oeuvres:pubPartIsPartOf ?pub_0 ;
+                        roud-oeuvres:pubPartHasTitle ?pubPart_1_titleIRI ;
+                        roud-oeuvres:pubPartHasNumber ?pubPart_1_numberIRI .
+        ?pubPart_1_titleIRI knora-base:valueHasString ?pubPart_1_title .
+        ?pubPart_1_numberIRI knora-base:valueHasString ?pubPart_1_number .
+    }
+   
+    
+}

@@ -1,0 +1,23 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+WITH <http://www.knora.org/ontology/0118/rome-siecles-obscurs>
+DELETE { 
+    <http://www.knora.org/ontology/0118/rome-siecles-obscurs#Illustration> rdfs:subClassOf ?bn .
+    ?bn rdf:type owl:Restriction ;
+            owl:onProperty <http://www.knora.org/ontology/0118/rome-siecles-obscurs#hasWorkAsTopic> ;
+            owl:minCardinality "1"^^xsd:nonNegativeInteger .
+}
+# INSERT {
+#     <http://www.knora.org/ontology/0118/rome-siecles-obscurs#Illustration> rdfs:subClassOf [
+#             rdf:type owl:Restriction ;
+#             owl:onProperty <http://www.knora.org/ontology/0118/rome-siecles-obscurs#hasWorkAsTopic> ;
+#             owl:minCardinality "0"^^xsd:nonNegativeInteger ].
+# }
+WHERE {
+    <http://www.knora.org/ontology/0118/rome-siecles-obscurs#Illustration> rdfs:subClassOf ?bn .
+    ?bn rdf:type owl:Restriction ;
+            owl:onProperty <http://www.knora.org/ontology/0118/rome-siecles-obscurs#hasWorkAsTopic> ;
+            owl:minCardinality "1"^^xsd:nonNegativeInteger .
+}

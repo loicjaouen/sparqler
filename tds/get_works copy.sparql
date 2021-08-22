@@ -1,0 +1,27 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX tds: <http://www.knora.org/ontology/0103/theatre-societe#>
+PREFIX kb: <http://www.knora.org/ontology/knora-base#>
+
+SELECT
+    distinct ?id 
+    (GROUP_CONCAT(?title; SEPARATOR=", ") as ?title) 
+    (GROUP_CONCAT(?author; SEPARATOR=", ") as ?author)
+    ?name
+WHERE {
+    bind(<http://rdfh.ch/0103/kluVtT_oRq-BNBWPlJqRFQ> as ?id)
+    ?id a tds:Work .
+    ?id kb:isDeleted "false"^^xsd:boolean .
+    OPTIONAL {
+        ?id tds:workHasTitle ?titleValue .
+        ?titleValue kb:valueHasString ?title .
+    }
+    OPTIONAL {
+        ?id tds:workHasAuthor ?author .
+        OPTIONAL {
+            ?author tds:hasFamilyName ?nameValue .
+            ?nameValue kb:valueHasString ?name .
+        }
+    }
+}
+GROUP BY ?id
+order by ?title

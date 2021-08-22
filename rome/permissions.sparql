@@ -1,0 +1,16 @@
+PREFIX admin: <http://webns.net/mvcb/>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX raso: <http://www.knora.org/ontology/0118/rome-siecles-obscurs#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+construct {
+    ?permission ?p ?o 
+}
+where { 
+	?permission a knora-admin:DefaultObjectAccessPermission ;
+                  knora-admin:forProject <http://rdfh.ch/projects/0118> .
+
+    ?permission ?p ?o
+}

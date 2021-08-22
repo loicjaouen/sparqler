@@ -1,0 +1,8 @@
+PREFIX urn: <http://fliqz.com/>
+SELECT ?s ?s1 ?s2 {
+{ ?s ?p ?o }
+UNION
+{ GRAPH <urn:x-arq:DefaultGraph> { ?s1 ?p1 ?o1 } }
+UNION
+{ GRAPH ?g2 { ?s2 ?p2 ?o2 } }
+}
