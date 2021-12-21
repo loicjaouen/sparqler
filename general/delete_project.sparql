@@ -1,0 +1,12 @@
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+
+# project definition
+#construct {
+delete {
+  ?s ?p ?o
+}
+where {
+  bind(<http://rdfh.ch/projects/0521> as ?s)
+  ?s ?p ?o .
+}
