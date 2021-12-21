@@ -1,0 +1,13 @@
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+
+# deleting users affiliation (not deleting the users)
+#construct {
+delete {
+  ?s ?p ?o
+}
+where {
+  bind(<http://rdfh.ch/projects/0521> as ?o)
+  ?s ?p ?o .
+  ?s a knora-admin:User ;
+}
