@@ -1,0 +1,9 @@
+PREFIX admin: <http://webns.net/mvcb/>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+select ?s ?p ?o 
+where { 
+	?s ?p ?o .
+    ?s a knora-admin:knoraProject .
+    ?s knora-base:projectShortcode '0117' .
+}
