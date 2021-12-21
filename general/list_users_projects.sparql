@@ -1,0 +1,16 @@
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+
+select 
+  ?username 
+  ?email
+  ?project
+where {
+  bind(<http://rdfh.ch/projects/0121> as ?project)
+  ?s a knora-admin:User ;
+    knora-admin:username ?username ;
+    knora-admin:email ?email ;
+    knora-admin:isInProject ?project .
+}
+#limit 50
+
