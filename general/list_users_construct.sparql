@@ -1,0 +1,10 @@
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+
+construct {
+  ?s ?p ?o
+} 
+where {
+  ?s ?p ?o .
+  ?s a knora-admin:User .
+}
