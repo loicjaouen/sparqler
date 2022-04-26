@@ -63,7 +63,20 @@ function do-main {
         exit 1
     esac
 
-    curl "${FLAG_HTTP:-http}://${ARG_USER:+$ARG_USER${ARG_PASSWORD:+:$ARG_PASSWORD}@}${ARG_HOST:-localhost}${ARG_PORT:+:$ARG_PORT}/repositories/${ARG_REPO:-knora-test}" \
+    case ${ARG_VENDOR:=graphdb} in
+    graphdb)
+        REPO_PATH="repositories/"
+        ;;
+    fuseki)
+        REPO_PATH=""
+        ;;
+    *)
+        echo "unknown vendor"
+        print_help
+        exit 1
+    esac
+
+    curl "${FLAG_HTTP:-http}://${ARG_USER:+$ARG_USER${ARG_PASSWORD:+:$ARG_PASSWORD}@}${ARG_HOST:-localhost}${ARG_PORT:+:$ARG_PORT}/${REPO_PATH}${ARG_REPO:-knora-test}" \
     -H "Accept:${ACCEPT}" \
     -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' \
     --data-raw "query=${QUERY}&infer=true&sameAs=true&limit=1000&offset=0" \
@@ -123,6 +136,10 @@ function do-parse_args {
             ARG_FORMAT="${i#*=}"
             shift
             ;;
+            --vendor=*)
+            ARG_VENDOR="${i#*=}"
+            shift
+            ;;
             *)
             echo "unknown argument switch: $1"
             echo
@@ -146,7 +163,7 @@ function print_help {
     cat >&2 << EOF
 Execute a query on a graphdb server.
 
-Usage: $0 [-v][--help] [--env=env_file] [--user=user] [--password=password] [-s] [--host=graphdb_host] [--port=port] [--repo=repo] --query=query_file [--output=output_file] [--format=rdf_format]
+Usage: $0 [-v][--help] [--env=env_file] [--user=user] [--password=password] [-s] [--host=graphdb_host] [--port=port] [--repo=repo] --query=query_file [--output=output_file] [--format=rdf_format] [--vendor=vendor]
 
 argument list:
   -v                : verbose
@@ -161,6 +178,7 @@ argument list:
   -q|--query=query  : file name of the query file
   -o|--output=file  : file to writre he output to
   --format=rdf_fmt  : rdf format (csv,ttl,json) 
+  --vendor=vendor   : sparql-endpoint vendor = {"graphdb", "fuseki"} 
 
 Note: the format has to match the nature of the data:
       ttl or trig are made for triples and graph and can
