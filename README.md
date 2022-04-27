@@ -4,7 +4,7 @@ multiple triple store sparql request edition and execution
 - Use VS Code to edit the requests with syntax highlighting
 - define tasks for executing the requests
 
-# installed exensions
+# installed extensions
 
 - [stardog-union.stardog-rdf-grammars](https://marketplace.visualstudio.com/items?itemName=stardog-union.stardog-rdf-grammars) syntax highlighter
 
