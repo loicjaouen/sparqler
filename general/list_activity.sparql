@@ -1,0 +1,19 @@
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX knora-admin: <http://www.knora.org/ontology/knora-admin#>
+select
+distinct
+  ?userName
+  ?projectName
+  ?shortDate
+where {
+  ?ressource ?property ?value .
+  ?value knora-base:valueCreationDate ?date .
+  ?value knora-base:attachedToUser ?user .
+  ?user knora-admin:username ?userName .
+  ?ressource knora-base:attachedToProject ?project .
+  ?project knora-admin:projectShortname ?projectName .
+  bind(substr(str(?date),0,11) as ?shortDate)
+}
+ORDER BY DESC (?date)
+LIMIT 50
