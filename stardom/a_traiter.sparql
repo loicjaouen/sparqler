@@ -1,0 +1,14 @@
+# why and how? 
+# https://platec.unil.ch/gitlab/projects_PlaTec/Vedetteriat/-/issues/30
+#
+# rsparql --query a_traiter.sparql --service=http://${DBUSER}:${DBPWD}@db.ls-prod-server.dasch.swiss/dsp-repo > extra_a_traiter.ttl
+
+
+CONSTRUCT {
+  ?subject ?predicate ?object
+}
+WHERE {
+  bind(<http://rdfh.ch/0107/ZXx14NYgRya6EihInGhSQg/values/gwNDFXJpS6y5CWuc56m2JA> as ?object)
+  bind(<http://www.knora.org/ontology/0107/stardom#hasInternalComment> as ?predicate)
+  ?subject ?predicate ?object
+}

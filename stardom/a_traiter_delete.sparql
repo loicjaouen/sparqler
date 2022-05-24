@@ -1,0 +1,14 @@
+# why and how? 
+# https://platec.unil.ch/gitlab/projects_PlaTec/Vedetteriat/-/issues/30
+#
+# rupdate --update a_traiter_delete.sparql --service=http://${DBUSER}:${DBPWD}@db.ls-prod-server.dasch.swiss/dsp-repo 
+
+
+DELETE {
+  ?subject ?predicate ?object
+}
+WHERE {
+  bind(<http://rdfh.ch/0107/ZXx14NYgRya6EihInGhSQg/values/gwNDFXJpS6y5CWuc56m2JA> as ?object)
+  bind(<http://www.knora.org/ontology/0107/stardom#hasInternalComment> as ?predicate)
+  ?subject ?predicate ?object
+}
