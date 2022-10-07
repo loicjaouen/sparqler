@@ -1,0 +1,23 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX knora-base: <http://www.knora.org/ontology/knora-base#>  
+PREFIX roud: <http://www.knora.org/ontology/0112/roud-oeuvres#>
+
+CONSTRUCT {
+  ?image ?hasPermission ?oldValue .
+} 
+FROM <http://www.knora.org/data/0112/roud-oeuvres>
+WHERE {
+  bind(knora-base:hasPermissions as ?hasPermission)
+  bind("M knora-admin:Creator,knora-admin:ProjectMember|V knora-admin:KnownUser|RV knora-admin:UnknownUser"^^<http://www.w3.org/2001/XMLSchema#string> as ?oldValue)
+
+  # get DataViz (not deleted)
+  ?dataVizRes a roud:DataViz .
+  ?dataVizRes knora-base:isDeleted false .  
+  
+  # grab DataViz's image
+  ?dataVizRes knora-base:hasStillImageFileValue ?image .
+
+  # and image's permission
+  ?image ?hasPermission ?oldValue .  
+} 
+limit 100
