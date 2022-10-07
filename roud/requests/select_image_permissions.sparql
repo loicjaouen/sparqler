@@ -11,7 +11,8 @@ WHERE {
   bind("M knora-admin:Creator,knora-admin:ProjectMember|V knora-admin:KnownUser|RV knora-admin:UnknownUser"^^<http://www.w3.org/2001/XMLSchema#string> as ?oldValue)
 
   # get DataViz (not deleted)
-  ?dataVizRes a roud:DataViz .
+  # ?dataVizRes a roud:DataViz .
+  ?dataVizRes a roud:photoPart .
   ?dataVizRes knora-base:isDeleted false .  
   
   # grab DataViz's image
